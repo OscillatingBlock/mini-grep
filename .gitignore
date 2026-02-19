@@ -1,1 +1,6 @@
 /target
+./.gitignore
+./poem.txt
+./target/poem
+./src/poem2.txt
+./link
