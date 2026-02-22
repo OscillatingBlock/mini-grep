@@ -58,13 +58,13 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let path = Path::new(&config.file_path);
     let query = Arc::new(config.query);
 
-    //  Create channels (Sender is natively Cloneable)
+    //  Create channels
     let (work_tx, work_rx) = mpsc::channel::<Job>();
     let (res_tx, res_rx) = mpsc::channel::<SearchResult>();
 
     let pool = ThreadPool::new(8);
 
-    //  Spawn Worker Manager (Give it a clone of res_tx)
+    //  Spawn Worker Manager
     let res_tx_child = res_tx.clone();
     thread::spawn(move || {
         spawn_worker_thread(pool, work_rx, res_tx_child);
@@ -76,7 +76,6 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         let path_to_move = PathBuf::from(&config.file_path);
         let query_child = Arc::clone(&query);
 
-        //  Walker Logic in Main Thread (To ensure we don't exit early)
         let mut buffer = Vec::with_capacity(100);
         check_recursively(
             path_to_move,
@@ -196,7 +195,7 @@ fn check_recursively(
                     check_recursively(path, Arc::clone(&query), ignore_case, work_tx, buffer);
                     continue;
                 } else if file_type.is_file() {
-                    buffer.push(path); // YOU MUST HAVE THIS LINE
+                    buffer.push(path);
 
                     if buffer.len() >= BATCH_SIZE {
                         let job = Job {
