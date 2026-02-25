@@ -7,7 +7,7 @@ mini-grep made in rust for learning purposes
 - also displays line numbers
 - ignores files like symlinks, sockets, pipes, binaries
 - search files recursively in directory
-- implement multi threading
+- multi threaeded search 
 
 ### todo
 
